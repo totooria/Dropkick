@@ -1,0 +1,35 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name_icon_label">Dropkick</string>
+    <string name="app_name">Dropkick Twit</string>
+    <string name="app_author">Ryogo Amamiya</string>
+    <string name="cryption">YEScNc2JgTYiSg6y</string>
+    <string name="app_url"><a href="http://ryogo.tokyo/">http://ryogo.tokyo/</a></string>
+    <string name="label_author">作った人：</string>
+    <string name="app_license">本アプリケーションは、Apache License, Version 2.0 (<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>) の下で提供される以下のソースコードを使用しています。\n・Twitter4J <a href="http://twitter4j.org/">http://twitter4j.org/</a></string>
+    <string name="label_tweet_body">Tweet body:</string>
+    <string name="label_open_auth_url">最初に下のボタンをクリックしてTwitterにログインしてください。ログイン後に表示される数字（PIN）をコピーしてください。</string>
+    <string name="label_input_pin">コピーした後はこの画面に戻ってきて、下のボックスにPINを入力してOKを押してください。</string>
+    <string name="label_select_hash_tag">ハッシュタグ履歴：</string>
+    <string name="label_no_hash_tag_history">ハッシュタグの入力履歴がありません</string>
+    <string name="label_confirm_clear_hashtag">履歴をクリアしてもよろしいですか？</string>
+    <string name="label_confirm_clear_authorization">このアプリが保存しているTwitterの認証情報を消去しようとしています。続行しますか？</string>
+    <string name="label_tweet_detail1" formatted="false">このハッシュタグで %d 回連続Post中（ %d 分前から）</string>
+    <string name="label_tweet_detail2" formatted="false">このハッシュタグで %d 回連続Post中</string>
+    <string name="button_post">Post</string>
+    <string name="button_post_with_char_count" formatted="false" tools:ignore="StringFormatInvalid">Post [%d]</string>
+    <string name="button_load_tags">History&#8230;</string>
+    <string name="button_authorization">認証</string>
+    <string name="button_remove_history">チェックした項目を削除</string>
+    <string name="menu_authorization">認証をやり直す</string>
+    <string name="menu_edit_history">ハッシュタグ履歴を編集</string>
+    <string name="menu_show_version">このアプリについて</string>
+    <string name="msg_err_internal">内部エラー : </string>
+    <string name="msg_err_invalid_pin">PINを入力してください</string>
+    <string name="msg_pin_auth_success">認証に成功しました</string>
+    <string name="msg_pin_auth_failed">認証に失敗しました</string>
+    <string name="msg_tweet_success">つぶやきました</string>
+    <string name="msg_tweet_failed">つぶやきの投稿に失敗しました</string>
+    <string name="msg_tweet_empty">ツイート内容が入力されていません</string>
+    <string name="msg_over_characters">ツイート内容が140字を超えています。</string>
+    <string name="pref_section_name">dropkick_preference</string>
+</resources>
