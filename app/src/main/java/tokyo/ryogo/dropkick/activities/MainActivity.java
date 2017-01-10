@@ -23,11 +23,14 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,24 +78,24 @@ public class MainActivity extends AppCompatActivity
         private final String mHashTag;
         private int mCount = 1;
 
-        public HashTagInformation(String hashTag){
+        HashTagInformation(String hashTag){
             mHashTag = hashTag;
         }
 
-        public HashTagInformation(String hashTag, int count){
+        HashTagInformation(String hashTag, int count){
             mHashTag = hashTag;
             mCount = count;
         }
 
-        public String getHashTag(){
+        String getHashTag(){
             return mHashTag;
         }
 
-        public int getCount(){
+        int getCount(){
             return mCount;
         }
 
-        public int incrementCount(){
+        int incrementCount(){
             mCount++;
             return mCount;
         }
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     // UI要素たち
     private Button mButtonPost;
+    private Button mButtonShowTagHistory;
     private EditText mTweetBodyText;
     private EditText mHashTagText;
     private TextView mTextHashTagUsage;
@@ -152,13 +156,31 @@ public class MainActivity extends AppCompatActivity
         mHashTagHistory = new HashTagHistory();
         mHashTagHistory.load(mPreference);
 
+        // UIイベントを登録
+        registerUIEvents();
+
+        // 本文ボックスにフォーカスを当てる
+        mTweetBodyText.requestFocus();
+
+        // ハードウェアキーボードが接続されている場合は、
+        // ヒントを表示する
+        if (isHardwareKeyboardAvailable()){
+            showToast(R.string.msg_physical_keyboard_detected);
+        }
+
+
+    }
+
+    private void registerUIEvents(){
+
         // UI要素を変数にいれておく
         mButtonPost = (Button)findViewById(R.id.buttonPost);
-        Button mButtonShowTagHistory = (Button) findViewById(R.id.buttonShowTagHistory);
+        mButtonShowTagHistory = (Button) findViewById(R.id.buttonShowTagHistory);
         Button mButtonInputWChar = (Button) findViewById(R.id.buttonInputWChar);
         mTweetBodyText = (EditText)findViewById(R.id.editTweetBody);
         mHashTagText = (EditText)findViewById(R.id.editHashTag);
         mTextHashTagUsage = (TextView)findViewById(R.id.textHashTagUsage);
+
 
         //UIイベントを登録-------------------------------------------------
         mButtonPost.setOnClickListener(new View.OnClickListener() {
@@ -199,15 +221,56 @@ public class MainActivity extends AppCompatActivity
                     String tweetFirst = tweetBody.substring(0, startSelection);
                     String tweetLast = endSelection < tweetBody.length() ? tweetBody.substring(endSelection) : "";
 
-                    StringBuilder sb =  new StringBuilder(tweetFirst);
-                    sb.append("ｗ");
-                    sb.append(tweetLast);
+                    try {
+                        StringBuilder sb = new StringBuilder(tweetFirst);
+                        sb.append("ｗ");
+                        sb.append(tweetLast);
 
-                     mTweetBodyText.setText(sb.toString());
-                     mTweetBodyText.setSelection(startSelection + 1);
+                        mTweetBodyText.setText(sb.toString());
+                        mTweetBodyText.setSelection(startSelection + 1);
+                    }catch (NullPointerException e){
+                        showToast("w-function failure : " + e.getMessage());
+                    }
+
                 }
             }
         });
+
+
+        // ショートカットキー操作を可能にするためにキー入力を監視するクラス
+        View.OnKeyListener keyListener = new View.OnKeyListener(){
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                // いままさにキーが押された状態の時
+                if(event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+
+                    switch (event.getKeyCode()) {
+                        case KeyEvent.KEYCODE_F2:
+                            // ハッシュタグ履歴表示ボタンが押せる状況ならば押す
+                            clickButtonIfEnabled(mButtonShowTagHistory);
+                            return true;
+                        case KeyEvent.KEYCODE_F11:
+                        case KeyEvent.KEYCODE_F12:
+                            // 投稿ボタンが押せる状況ならば押す
+                            clickButtonIfEnabled(mButtonPost);
+                            return true;
+                        case KeyEvent.KEYCODE_ENTER:
+                            // Ctrlが押されている場合投稿ボタンが押せる状況ならば押す
+                            if(event.isCtrlPressed()) {
+                                // 投稿ボタンが押せる状況ならば押す
+                                clickButtonIfEnabled(mButtonPost);
+                                return true;
+                            }else{
+                                break;
+                            }
+                        default:
+                            return false;
+                    }
+                }
+                return false;
+            }
+        };
 
         // 本文の入力値の変更を監視するクラス
         TextWatcher textWatcher = new TextWatcher() {
@@ -254,11 +317,10 @@ public class MainActivity extends AppCompatActivity
         //上記クラスをイベントリスナに追加
         mTweetBodyText.addTextChangedListener(textWatcher);
         mHashTagText.addTextChangedListener(textWatcher);
-        //UIイベントを登録 ここまで-----------------------------------------
-
+        mTweetBodyText.setOnKeyListener(keyListener);
+        mHashTagText.setOnKeyListener(keyListener);
 
     }
-
 
     @Override
     protected void onResume(){
@@ -449,7 +511,11 @@ public class MainActivity extends AppCompatActivity
                     // 本文を空にする
                     mTweetBodyText.setText("");
 
-                    showToast(R.string.msg_tweet_success);
+                    if (BuildConfig.DEBUG) {
+                        showToast(R.string.msg_debug_mode_enabled);
+                    }else{
+                        showToast(R.string.msg_tweet_success);
+                    }
                 } else {
                     showToast(mTwitter.getLastErrorMessage());
                 }
@@ -635,5 +701,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // 物理キーボードが存在するか
+    private boolean isHardwareKeyboardAvailable() {
+        // http://stackoverflow.com/questions/2415558/how-to-detect-hardware-keyboard-presence
+        Configuration configuration = MainActivity.this.getResources().getConfiguration();
+        return (configuration.keyboard & Configuration.KEYBOARD_QWERTY) ==  Configuration.KEYBOARD_QWERTY;
+    }
+
+    // 引数で渡されたボタンが、有効な場合のみクリックする。無効の場合は何もしない。
+    private void clickButtonIfEnabled(Button button){
+        if(button.isEnabled()) button.callOnClick();
+    }
 
 }

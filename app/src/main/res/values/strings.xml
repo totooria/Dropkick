@@ -6,6 +6,7 @@
     <string name="app_url"><a href="http://ryogo.tokyo/">http://ryogo.tokyo/</a></string>
     <string name="label_author">作った人：</string>
     <string name="app_license">本アプリケーションは、Apache License, Version 2.0 (<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>) の下で提供される以下のソースコードを使用しています。\n・Twitter4J <a href="http://twitter4j.org/">http://twitter4j.org/</a></string>
+    <string name="app_hint">お知らせ：ハードウェアキーボード接続時は、キーボードの[F11] [F12] [Ctrl + Enter]キーのいずれかを押すことで、直接つぶやくことが出来ます。ご利用のIMEのショートカットキーと重複しないものをご利用ください。また、[F2]キーでハッシュタグ履歴画面を表示できます。</string>
     <string name="label_tweet_body">Tweet body:</string>
     <string name="label_open_auth_url">最初に下のボタンをクリックしてTwitterにログインしてください。ログイン後に表示される数字（PIN）をコピーしてください。</string>
     <string name="label_input_pin">コピーした後はこの画面に戻ってきて、下のボックスにPINを入力してOKを押してください。</string>
@@ -30,6 +31,8 @@
     <string name="msg_tweet_success">つぶやきました</string>
     <string name="msg_tweet_failed">つぶやきの投稿に失敗しました</string>
     <string name="msg_tweet_empty">ツイート内容が入力されていません</string>
+    <string name="msg_debug_mode_enabled">[DEBUG MODE] つぶやきました</string>
     <string name="msg_over_characters">ツイート内容が140字を超えています。</string>
+    <string name="msg_physical_keyboard_detected">ハードウェアキーボードの[F11]、[F12]または[Ctrl + Enter]を押しても、つぶやくことが出来ます。</string>
     <string name="pref_section_name">dropkick_preference</string>
 </resources>
